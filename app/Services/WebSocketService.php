@@ -9,6 +9,7 @@ use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
 use Hhxsv5\LaravelS\Swoole\Task\Task;
+use Illuminate\Support\Facades\Redis;
 
 class WebSocketService implements WebSocketHandlerInterface
 {
@@ -25,10 +26,13 @@ class WebSocketService implements WebSocketHandlerInterface
         // \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
         $server->push($request->fd, 'Welcome to LaravelS');
 
-        $task = new TestTask('task data');
-        // $task->delay(3);// 延迟3秒投放任务
-        $ret = Task::deliver($task);
-        var_dump($ret); //判断是否投递成功
+        Redis::set('s', 1);
+        Redis::expire('s', 20);
+
+        // $task = new TestTask('task data');
+        // // $task->delay(3);// 延迟3秒投放任务
+        // $ret = Task::deliver($task);
+        // var_dump($ret); //判断是否投递成功
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
 

@@ -19,7 +19,7 @@ class TestTask extends Task
     public function handle()
     {
         Log::info(__CLASS__ . ':handle start', [$this->data]);
-        sleep(2); // 模拟一些慢速的事件处理
+        // sleep(2); // 模拟一些慢速的事件处理
         // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
         $this->result = 'the result of ' . $this->data;
     }

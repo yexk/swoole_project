@@ -8,7 +8,7 @@ return [
     'listen_ip'                => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
     'listen_port'              => env('LARAVELS_LISTEN_PORT', 5200),
     'socket_type'              => defined('SWOOLE_SOCK_TCP') ? SWOOLE_SOCK_TCP : 1,
-    'enable_coroutine_runtime' => true,
+    'enable_coroutine_runtime' => false,
     'server'                   => env('LARAVELS_SERVER', 'Yexk'),
     'handle_static'            => env('LARAVELS_HANDLE_STATIC', false),
     'laravel_base_path'        => env('LARAVEL_BASE_PATH', base_path()),
@@ -26,12 +26,12 @@ return [
     ],
     'sockets'                  => [],
     'processes'                => [
-        //[
-        //    'class'    => \App\Processes\TestProcess::class,
-        //    'redirect' => false, // Whether redirect stdin/stdout, true or false
-        //    'pipe'     => 0 // The type of pipeline, 0: no pipeline 1: SOCK_STREAM 2: SOCK_DGRAM
-        //    'enable'   => true // Whether to enable, default true
-        //],
+        [
+            'class'    => \App\Processes\TestProcess::class,
+            'redirect' => false, // Whether redirect stdin/stdout, true or false
+            'pipe'     => 0, // The type of pipeline, 0: no pipeline 1: SOCK_STREAM 2: SOCK_DGRAM
+            'enable'   => true // Whether to enable, default true
+        ],
     ],
     'timer'                    => [
         'enable'        => false,
@@ -45,7 +45,14 @@ return [
         'max_wait_time' => 5,
     ],
     'events'                   => [],
-    'swoole_tables'            => [],
+    'swoole_tables'            => [
+        'fd' => [ // Key为Table名称，使用时会自动添加Table后缀，避免重名。这里定义名为wsTable的Table
+            'size'   => 102400, //Table的最大行数
+            'column' => [ // Table的列定义
+                ['name' => 'fd', 'type' => \Swoole\Table::TYPE_INT, 'size' => 8],
+            ],
+        ],
+    ],
     'register_providers'       => [],
     'cleaners'                 => [
         // If you use the session/authentication/passport in your project
